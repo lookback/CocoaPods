@@ -23,14 +23,16 @@ module Pod
     #
     class TargetEnvironmentHeader
 
-      # @return [Array<LocalPod>] the specifications installed for the target.
+      # @return [Array<TargetDefinition>] the target definitions installed for the target.
       #
-      attr_reader :specs
+      attr_reader :target_definitions
 
-      # @param  [Array<LocalPod>] pods @see pods
+      # @param  [Array<Library>] target_definitions @see target_definitions
+      # @param  [Array<String>]  build_configs Names of the configurations in the aggregate target
       #
-      def initialize(specs)
-        @specs = specs
+      def initialize(target_definitions, build_configs)
+        @target_definitions = target_definitions
+        @build_configs = build_configs
       end
 
       # Generates and saves the file.
@@ -50,10 +52,26 @@ module Pod
           source.puts "// project."
           source.puts
           source.puts
-          specs.each do |spec|
+          puts "HELLO DEFS #{target_definitions}"
+          target_definitions.each do |targdef|
+            puts "target #{targdef}"
+            spec = pod_target.specs[0]
             spec_name = safe_spec_name(spec.name)
             source.puts "// #{spec.name}"
-            source.puts "#define COCOAPODS_POD_AVAILABLE_#{spec_name}"
+            source.puts "#define COCOAPODS_POD_HEADERS_AVAILABLE_#{spec_name}"
+
+            pod_whitelisted_in_configs = @build_configs.filter do |config_name|
+              pod_target.is_pod_whitelisted_for_configuration?(spec.name, config_name)
+            end
+            if pod_whitelisted_in_configs != @build_configs
+              condition = pod_whitelisted_in_configs.map { |config_name| "COCOAPODS_BUILD_CONFIGURATION_#{config_name}"}.join(" || ")
+              source.puts "#if #{condition}"
+              source.puts "    #define COCOAPODS_POD_AVAILABLE_#{spec_name}"
+              source.puts "#endif"
+            else
+              source.puts "#define COCOAPODS_POD_AVAILABLE_#{spec_name}"
+            end
+
             if spec.version.semantic?
               source.puts "#define COCOAPODS_VERSION_MAJOR_#{spec_name} #{spec.version.major}"
               source.puts "#define COCOAPODS_VERSION_MINOR_#{spec_name} #{spec.version.minor}"

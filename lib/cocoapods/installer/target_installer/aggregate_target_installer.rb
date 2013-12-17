@@ -50,7 +50,9 @@ module Pod
       def create_target_environment_header
         path = library.target_environment_header_path
         UI.message "- Generating target environment header at #{UI.path(path)}" do
-          generator = Generator::TargetEnvironmentHeader.new(library.pod_targets.map { |l| l.specs }.flatten)
+          specs = library.pod_targets.map { |l| l.specs }.flatten
+          pod_target = library.pod_targets[0]
+          generator = Generator::TargetEnvironmentHeader.new(specs, pod_target, target.build_configurations)
           generator.save_as(path)
           add_file_to_support_group(path)
         end
