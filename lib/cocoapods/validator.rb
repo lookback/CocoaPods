@@ -60,8 +60,8 @@ module Pod
       # Replace default spec with a subspec if asked for
       a_spec = spec
       if spec && @only_subspec
-          a_spec = spec.subspec_by_name(@only_subspec)
-          @subspec_name = a_spec.name
+        a_spec = spec.subspec_by_name(@only_subspec)
+        @subspec_name = a_spec.name
       end
 
       UI.print " -> #{a_spec ? a_spec.name : file.basename}\r" unless config.silent?
@@ -196,6 +196,9 @@ module Pod
     # Perform analysis for a given spec (or subspec)
     #
     def perform_extensive_analysis(spec)
+      validate_homepage(spec)
+      validate_screenshots(spec)
+
       spec.available_platforms.each do |platform|
         UI.message "\n\n#{spec} - Analyzing on #{platform} platform.".green.reversed
         @consumer = spec.consumer(platform)
@@ -208,17 +211,55 @@ module Pod
       perform_extensive_subspec_analysis(spec) unless @no_subspecs
     end
 
-    # Recurively perform the extensive analysis on all subspecs
+    # Recursively perform the extensive analysis on all subspecs
     #
     def perform_extensive_subspec_analysis(spec)
-        spec.subspecs.each do |subspec|
-            @subspec_name = subspec.name
-            perform_extensive_analysis(subspec)
-        end
+      spec.subspecs.each do |subspec|
+        @subspec_name = subspec.name
+        perform_extensive_analysis(subspec)
+      end
     end
 
     attr_accessor :consumer
     attr_accessor :subspec_name
+
+    # Performs validation of a URL
+    #
+    def validate_url(url)
+      require 'rest'
+
+      begin
+        resp = ::REST.head(url)
+      rescue
+        warning "There was a problem validating the URL #{url}."
+        resp = nil
+      end
+
+      if resp && !resp.success?
+        warning "The URL (#{url}) is not reachable."
+      end
+
+      resp
+    end
+
+    # Performs validations related to the `homepage` attribute.
+    #
+    def validate_homepage(spec)
+      if spec.homepage
+        validate_url(spec.homepage)
+      end
+    end
+
+    # Performs validation related to the `screenshots` attribute.
+    #
+    def validate_screenshots(spec)
+      spec.screenshots.each do |screenshot|
+        request = validate_url(screenshot)
+        if request && !(request.headers['content-type'] && request.headers['content-type'].first =~ /image\/.*/i)
+          warning "The screenshot #{screenshot} is not a valid image."
+        end
+      end
+    end
 
     def setup_validation_environment
       validation_dir.rmtree if validation_dir.exist?
@@ -392,9 +433,10 @@ module Pod
     end
 
     # @return [String] Executes xcodebuild in the current working directory and
-    #         returns its output (bot STDOUT and STDERR).
+    #         returns its output (both STDOUT and STDERR).
     #
     def xcodebuild
+      UI.puts 'xcodebuild clean build -target Pods' if config.verbose?
       `xcodebuild clean build -target Pods 2>&1`
     end
 

@@ -1,5 +1,6 @@
 # Do’s and Don’ts
 
+* **Search the solutions in the [troubleshooting guide](http://guides.cocoapods.org/using/troubleshooting.html).** Or any of the many other [guides](http://guides.cocoapods.org).
 * **Search tickets before you file a new one.** Add to tickets if you have new information about the issue.
 * **Only file tickets about the CocoaPods tool itself.** This includes [CocoaPods](https://github.com/CocoaPods/CocoaPods/issues),
   [CocoaPods/Core](https://github.com/CocoaPods/Core/issues), and [Xcodeproj](https://github.com/CocoaPods/Xcodeproj/issues).

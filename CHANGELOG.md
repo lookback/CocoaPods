@@ -3,8 +3,10 @@
 To install or update CocoaPods see this [guide](http://docs.cocoapods.org/guides/installing_cocoapods.html).
 
 ## Master
+[CocoaPods](https://github.com/CocoaPods/CocoaPods/compare/master...0.31.1)
+• [CocoaPods-Core](https://github.com/CocoaPods/Core/compare/master...0.31.1)
 
-###### Bug Fixes
+##### Bug Fixes
 
 * Properly quote the `-isystem` values in the xcconfig files.
   [Eloy Durán](https://github.com/alloy)
@@ -12,6 +14,171 @@ To install or update CocoaPods see this [guide](http://docs.cocoapods.org/guides
 * Include configurations a user explicitely specifies in their Podfile when the
   `--no-integrate` option is specified.
   [Eloy Durán](https://github.com/alloy)
+
+##### Enhancements
+
+* Allow to update only a list of given pods with `pod update [POD_NAMES...]`.  
+  [Marius Rackwitz](https://github.com/mrackwitz)
+  [CocoaPods#760](https://github.com/CocoaPods/CocoaPods/issues/760)
+
+* `pod update` falls back to `pod install` if no Lockfile is present.  
+  [Marius Rackwitz](https://github.com/mrackwitz)
+
+* `pod lib create` is now using the `configure` file instead of the `_CONFIGURE.rb` file.  
+  [Piet Brauer](https://github.com/pietbrauer)
+  [Orta Therox](https://github.com/orta)
+
+* Validate the reachability of screenshot URLs in podspecs while linting a
+  specification.  
+  [Kyle Fuller](https://github.com/kylef)
+  [#2010](https://github.com/CocoaPods/CocoaPods/issues/2010)
+
+## 0.31.1
+[CocoaPods](https://github.com/CocoaPods/CocoaPods/compare/0.31.1...0.31.0)
+• [CocoaPods-Core](https://github.com/CocoaPods/Core/compare/0.31.1...0.31.0)
+
+##### Minor Enhancements
+
+* The specification now strips the indentation of the `prefix_header` and
+  `prepare_command` to aide their declaration as a here document (similarly to
+  what it already does with the description).  
+  [Fabio Pelosin][irrationalfab]
+  [Core#51](https://github.com/CocoaPods/Core/issues/51)
+
+##### Bug Fixes
+
+* Fix linting for Pods which declare a private repo as the source.  
+  [Boris Bügling](https://github.com/neonichu)
+  [Core#82](https://github.com/CocoaPods/Core/issues/82)
+
+
+## 0.31.0
+[CocoaPods](https://github.com/CocoaPods/CocoaPods/compare/0.30.0...0.31.0)
+• [CocoaPods-Core](https://github.com/CocoaPods/Core/compare/0.30.0...0.31.0)
+
+##### Enhancements
+
+* Warnings are not promoted to errors anymore to maximise compatibility with
+  existing libraries.  
+  [Fabio Pelosin](https://github.com/irrationalfab)
+  [#1629](https://github.com/CocoaPods/CocoaPods/issues/1629)
+
+* Include the versions of the Pods to the output of `pod list`.  
+  [Stefan Damm](https://github.com/StefanDamm)
+  [Robert Zuber](https://github.com/z00b)
+  [#1617](https://github.com/CocoaPods/CocoaPods/issues/1617)
+
+* Generated prefix header file will now have unique prefix_header_contents for
+  Pods with subspecs.  
+  [Luis de la Rosa](https://github.com/luisdelarosa)
+  [#1449](https://github.com/CocoaPods/CocoaPods/issues/1449)
+
+* The linter will now check the reachability of the homepage of Podspecs during
+  a full lint.  
+  [Richard Lee](https://github.com/dlackty)
+  [Fabio Pelosin](https://github.com/irrationalfab)
+  [#1704](https://github.com/CocoaPods/CocoaPods/issues/1704)
+  [Core#70](https://github.com/CocoaPods/Core/pull/70)
+
+* Improved detection of the last version of a specification in `pod spec`
+  subcommands.  
+  [Laurent Sansonetti](https://github.com/lrz)
+  [#1953](https://github.com/CocoaPods/CocoaPods/pull/1953)
+
+* Display advised settings for Travis CI in the warning related presented when
+  the terminal encoding is not set to UTF-8.  
+  [Richard Lee](https://github.com/dlackty)
+  [#1933](https://github.com/CocoaPods/CocoaPods/issues/1933)
+  [#1941](https://github.com/CocoaPods/CocoaPods/pull/1941)
+
+* Unset the `CDPATH` env variable before shelling-out to `prepare_command`.  
+  [Marc Boquet](https://github.com/apalancat)
+  [#1943](https://github.com/CocoaPods/CocoaPods/pull/1943)
+
+##### Bug Fixes
+
+* Resolve crash related to the I18n deprecation warning.  
+  [Eloy Durán](https://github.com/alloy)
+  [#1950](https://github.com/CocoaPods/CocoaPods/issues/1950)
+
+* Fix compilation issues related to the native Extension of Xcodeproj.  
+  [Eloy Durán](https://github.com/alloy)
+
+* Robustness against user Git configuration and against merge commits in `pod
+  repo` subcommands.  
+  [Boris Bügling](https://github.com/neonichu)
+  [#1949](https://github.com/CocoaPods/CocoaPods/issues/1949)
+  [#1978](https://github.com/CocoaPods/CocoaPods/pull/1978)
+
+* Gracefully inform the user if the `:head` option is not supported for a given
+  download strategy.  
+  [Boris Bügling](https://github.com/neonichu)
+  [#1947](https://github.com/CocoaPods/CocoaPods/issues/1947)
+  [#1958](https://github.com/CocoaPods/CocoaPods/pull/1958)
+
+* Cleanup a pod directory if error occurs while downloading.  
+  [Alex Rothenberg](https://github.com/alexrothenberg)
+  [#1842](https://github.com/CocoaPods/CocoaPods/issues/1842)
+  [#1960](https://github.com/CocoaPods/CocoaPods/pull/1960)
+
+* No longer warn for Github repositories with OAuth authentication.  
+  [Boris Bügling](https://github.com/neonichu)
+  [#1928](https://github.com/CocoaPods/CocoaPods/issues/1928)
+  [Core#77](https://github.com/CocoaPods/Core/pull/77)
+
+* Fix for when using `s.version` as the `:tag` for a git repository in a
+  Podspec.  
+  [Joel Parsons](https://github.com/joelparsons)
+  [#1721](https://github.com/CocoaPods/CocoaPods/issues/1721)
+  [Core#72](https://github.com/CocoaPods/Core/pull/72)
+
+* Improved escaping of paths in Git downloader.  
+  [Vladimir Burdukov](https://github.com/chipp)
+  [cocoapods-downloader#14](https://github.com/CocoaPods/cocoapods-downloader/pull/14)
+
+* Podspec without explicitly set `requires_arc` attribute no longer passes the
+  lint.  
+  [Richard Lee](https://github.com/dlackty)
+  [#1840](https://github.com/CocoaPods/CocoaPods/issues/1840)
+  [Core#71](https://github.com/CocoaPods/Core/pull/71)
+
+* Properly quote headers in the `-isystem` compiler flag of the aggregate
+  targets.  
+  [Eloy Durán](https://github.com/alloy)
+  [#1862](https://github.com/CocoaPods/CocoaPods/issues/1862)
+  [#1894](https://github.com/CocoaPods/CocoaPods/pull/1894)
+
+## 0.30.0
+[CocoaPods](https://github.com/CocoaPods/CocoaPods/compare/0.29.0...0.30.0)
+
+###### Enhancements
+
+* Radically reduce first run pod setup bandwidth by creating a shallow clone of
+  the ‘master’ repo by default. Use the `--no-shallow` option to perform a full
+  clone instead.  
+  [Jeff Verkoeyen](https://github.com/jverkoey)
+  [#1803](https://github.com/CocoaPods/CocoaPods/pull/1803)
+
+* Improves the error message when searching with an invalid regular expression.  
+  [Kyle Fuller](https://github.com/kylef)
+
+* Improves `pod init` to save Xcode project file in Podfile when one was supplied.  
+  [Kyle Fuller](https://github.com/kylef)
+
+* Adds functionality to specify a template URL for the `pod lib create` command.  
+  [Piet Brauer](https://github.com/pietbrauer)
+
+###### Bug Fixes
+
+* Fixes a bug with `pod repo remove` silently handling permission errors.  
+  [Kyle Fuller](https://github.com/kylef)
+  [#1778](https://github.com/CocoaPods/CocoaPods/issues/1778)
+
+* `pod push` now properly checks that the repo has changed before attempting
+  to commit. This only affected pods with special characters (such as `+`) in
+  their names.  
+  [Gordon Fontenot](https://github.com/gfontenot)
+  [#1739](https://github.com/CocoaPods/CocoaPods/pull/1739)
 
 
 ## 0.29.0
@@ -2075,3 +2242,6 @@ allowing you to automate Xcode related tasks.
 [5]: https://github.com/tomaz/appledoc
 [6]: https://github.com/CocoaPods/CocoaPods/compare/0.5.1...0.6.0
 [7]: https://github.com/CocoaPods/CocoaPods/compare/0.3.10...0.5.0
+
+[irrationalfab]: https://github.com/irrationalfab
+
